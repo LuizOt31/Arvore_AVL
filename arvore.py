@@ -6,16 +6,14 @@
 # LEMBRE-SE: x.b = Hleft - Hright sendo que x.b tem que estar entre {-1, 0, 1}
 #
 
-class AVLTree:
+class no:
     def __init__(self, valor):
-        self.key = valor
-        self.altura = 0
+        self.chave = valor
+        self.altura = 1
         self.left = None
         self.right = None
 
-    '''Calculo de Altura para os fatores de balanceamento'''
-
-
+class ArvoreAVL(object):
     '''rotações simples'''
     #Rotação simples à direita
     def LL(self, raiz):
@@ -51,10 +49,37 @@ class AVLTree:
         return self.RR(raiz)
 
     '''Algoritmos de inserção, remoção e busca'''
-    def insercao(self, chave):
-        self.root = self._insercao()
 
-    def _insercao(self, raiz, chave):
+    def insercao(self, raiz, chave):
         if raiz is None:
-            return AVLTree(chave)
+            return no(chave)
+        
+        if chave < raiz.chave:
+            raiz.left = self.insercao(raiz.left, chave)
+        else:
+            raiz.right = self.insercao(raiz.right, chave)
+
+        raiz.altura = 1 + max(self.getHeight(raiz.right), self.getHeight(raiz.left))
+        balanceamento = self.fatorBalanceamento(raiz)
+
+        if balanceamento > 1 and chave < raiz.left.chave:
+            return self.LL(raiz)
+        elif balanceamento > 1 and chave > raiz.left.chave:
+            return self.LR(raiz)
+        elif balanceamento < -1 and chave < raiz.right.chave:
+            return self.RR(raiz)
+        if balanceamento < -1 and chave > raiz.right.chave:
+            return self.RL(raiz)
+        return raiz
+
+        
+
+    '''Calculo de Altura para os fatores de balanceamento'''
+    def getHeight(self, raiz):
+        if raiz is None:
+            return 0
+        return raiz.altura
         #continuar....        
+
+    def fatorBalanceamento(self, raiz):
+        return self.getHeight(raiz.left) - self.getHeight(raiz.right)
