@@ -3,14 +3,14 @@
 Implementação de uma árvore AVL feito em parceria com meu colega Leonardo
 
 GitHub dele (estará a mesma implementação em seu perfil):
--   [!Link[leleo-link]]
+-   [Link GitHub do Leonardo]
 
 ## Funcionalidades Implementadas
--[Rotações simples e duplas]
--[Inserção]
--[Remoção]
--[Busca]
--[Funções para percorrer árvore: inorder, postorder, preorder]
+-  Rotações simples e duplas
+-  Inserção
+-  Remoção
+-  Busca
+-  Funções para percorrer árvore: inorder, postorder, preorder
 
 Há duas classes implementadas, a Nó (a qual ira de fato guardar os valores), e a árvore (aonde os nós serão inseridos)
 
@@ -22,4 +22,4 @@ Estrutura muito eficiente, seus algoritmos de busca são O(log n) por sempre est
 
 
 
-[leleo-link]:https://github.com/Triiltz
+[Link GitHub do Leonardo]:https://github.com/Triiltz
