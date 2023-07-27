@@ -1,11 +1,32 @@
-from arvore import no
-from arvore import ArvoreAVL
+from AVLTree import No
+from AVLTree import ArvoreAVL
 
-arvore = ArvoreAVL()
-raiz = None
+def main():
+    # Criacao uma árvore vazia
+    arvore = ArvoreAVL()
 
-raiz = arvore.insercao(raiz, 1)
-raiz = arvore.insercao(raiz, 10)
-raiz = arvore.insercao(raiz, 20)
+    # Inserindo os elementos na árvore
+    raiz = None
+    elementos = [1, 10, 20]
+    for elemento in elementos:
+        raiz = arvore.insercao(raiz, elemento)
 
-print(raiz.chave)
+  # Printando a raiz
+    print("Raiz:")
+    print(raiz.valor)
+  
+    # Funções de percurso
+    print("Pre-Order:")
+    arvore.preOrder(raiz)
+    print("\n")
+
+    print("In-Order:")
+    arvore.inOrder(raiz)
+    print("\n")
+
+    print("Post-Order:")
+    arvore.postOrder(raiz)
+    print("\n")
+
+if __name__ == "__main__":
+    main()
