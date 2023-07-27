@@ -73,7 +73,6 @@ class ArvoreAVL(object):
         return raiz
 
         
-
     '''Calculo de Altura para os fatores de balanceamento'''
     def getHeight(self, raiz):
         if raiz is None:
@@ -83,3 +82,17 @@ class ArvoreAVL(object):
 
     def fatorBalanceamento(self, raiz):
         return self.getHeight(raiz.left) - self.getHeight(raiz.right)
+
+    def busca(raiz, valor):
+        if raiz is None:
+            print("Elemento nao encontrado!")
+        return None
+
+    if raiz.valor == valor:
+        print("Elemento encontrado!")
+        return raiz
+    elif valor < raiz.valor:
+        return busca(raiz.left_child, valor)
+    else:
+        return busca(raiz.right_child, valor)
+
