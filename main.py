@@ -1,4 +1,4 @@
-from arvore import no
+from arvore import No
 from arvore import ArvoreAVL
 
 arvore = ArvoreAVL()

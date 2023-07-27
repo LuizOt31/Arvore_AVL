@@ -6,10 +6,10 @@
 # LEMBRE-SE: x.b = Hleft - Hright sendo que x.b tem que estar entre {-1, 0, 1}
 #
 
-class no:
+class No:
     def __init__(self, valor):
         self.chave = valor
-        self.altura = 1
+        self.altura = 0
         self.left = None
         self.right = None
 
@@ -18,12 +18,15 @@ class ArvoreAVL(object):
     #Rotação simples à direita
     def LL(self, raiz):
         X = raiz.left
-        raiz.left = X.right
+        T2 = X.right
+
         X.right = raiz
+        raiz.left = T2
 
         self.atualizar_altura(raiz)
         self.atualizar_altura(X)
-        return X  # retorna a nova raiz
+
+        return X  # retorna a NOva raiz
 
     # Rotação simples à esquerda
     def RR(self, raiz):
@@ -52,7 +55,7 @@ class ArvoreAVL(object):
 
     def insercao(self, raiz, chave):
         if raiz is None:
-            return no(chave)
+            return No(chave)
         
         if chave < raiz.chave:
             raiz.left = self.insercao(raiz.left, chave)
@@ -64,12 +67,13 @@ class ArvoreAVL(object):
 
         if balanceamento > 1 and chave < raiz.left.chave:
             return self.LL(raiz)
-        elif balanceamento > 1 and chave > raiz.left.chave:
+        if balanceamento > 1 and chave > raiz.left.chave:
             return self.LR(raiz)
-        elif balanceamento < -1 and chave < raiz.right.chave:
-            return self.RR(raiz)
         if balanceamento < -1 and chave > raiz.right.chave:
+            return self.RR(raiz)
+        if balanceamento < -1 and chave <  raiz.right.chave:
             return self.RL(raiz)
+
         return raiz
 
         
@@ -77,9 +81,12 @@ class ArvoreAVL(object):
     '''Calculo de Altura para os fatores de balanceamento'''
     def getHeight(self, raiz):
         if raiz is None:
-            return 0
+            return -1
         return raiz.altura
         #continuar....        
 
     def fatorBalanceamento(self, raiz):
         return self.getHeight(raiz.left) - self.getHeight(raiz.right)
+
+    def atualizar_altura(self, raiz):
+        raiz.altura = 1 + max(self.getHeight(raiz.right), self.getHeight(raiz.left))
