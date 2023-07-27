@@ -1,31 +1,41 @@
-# Trabalho Prático montar Arovore AVL balanceada
-#
-# rotação a esquerda, rotação a direita, rotação esquerda-direita,
-# rotação direita-esquerda, inserção, remoção, pesquisa, percorrer estrutura, etc.
-#
-# LEMBRE-SE: x.b = Hleft - Hright sendo que x.b tem que estar entre {-1, 0, 1}
-#
+'''
+O código oferece uma árvore AVL com todas suas funcionalidades
+Nosso grupo preferiu optar por fazer duas classes, a árvore em sí e os nós (os que guardam de fato o conteudo)
 
+rotação a esquerda, rotação a direita, rotação esquerda-direita,
+rotação direita-esquerda, inserção, remoção, pesquisa, percorrer estrutura, etc.
+
+LEMBRE-SE: x.altura = Hleft - Hright sendo que x.b tem que estar entre {-1, 0, 1}
+
+Ideias para melhorar no futuro: implementar em uma classe apenas!
+'''
 class No:
     def __init__(self, valor):
-        self.chave = valor
+        self.valor = valor
         self.altura = 0
         self.left = None
         self.right = None
 
 class ArvoreAVL(object):
 
-    '''Calculo de Altura para os fatores de balanceamento'''
-    def getHeight(self, raiz):
+    '''Calculo de Altura para os fatores de balanceamento e funções auxiliares'''
+
+    #função auxiliar para a Remoção para achar menor valor na subarvore que precisa
+    def MinimoValorDaArvore(self, root):
+        if root is None or root.left is None:
+            return root
+        return self.MinimoValorDaArvore(root.left)
+
+    def getAltura(self, raiz):
         if raiz is None:
             return -1
         return raiz.altura      
 
     def fatorBalanceamento(self, raiz):
-        return self.getHeight(raiz.left) - self.getHeight(raiz.right)
+        return self.getAltura(raiz.left) - self.getAltura(raiz.right)
 
     def atualizar_altura(self, raiz):
-        raiz.altura = 1 + max(self.getHeight(raiz.right), self.getHeight(raiz.left))
+        raiz.altura = 1 + max(self.getAltura(raiz.right), self.getAltura(raiz.left))
 
     '''rotações simples'''
     #Rotação simples à direita
@@ -67,88 +77,103 @@ class ArvoreAVL(object):
 
     '''Algoritmos de inserção, remoção e busca'''
 
-    def insercao(self, raiz, chave):
+    #função de inserir elemento na arvore com as rotações
+    def insercao(self, raiz, valor):
         if raiz is None:
-            return No(chave)
+            return No(valor)
         
-        if chave < raiz.chave:
-            raiz.left = self.insercao(raiz.left, chave)
+        if valor < raiz.valor:
+            raiz.left = self.insercao(raiz.left, valor)
         else:
-            raiz.right = self.insercao(raiz.right, chave)
+            raiz.right = self.insercao(raiz.right, valor)
 
-        raiz.altura = 1 + max(self.getHeight(raiz.right), self.getHeight(raiz.left))
+        raiz.altura = 1 + max(self.getAltura(raiz.right), self.getAltura(raiz.left))
         balanceamento = self.fatorBalanceamento(raiz)
 
-        if balanceamento > 1 and chave < raiz.left.chave:
+        if balanceamento > 1 and valor < raiz.left.valor:
             return self.LL(raiz)
-        if balanceamento > 1 and chave > raiz.left.chave:
+        if balanceamento > 1 and valor > raiz.left.valor:
             return self.LR(raiz)
-        if balanceamento < -1 and chave > raiz.right.chave:
+        if balanceamento < -1 and valor > raiz.right.valor:
             return self.RR(raiz)
-        if balanceamento < -1 and chave <  raiz.right.chave:
+        if balanceamento < -1 and valor <  raiz.right.valor:
             return self.RL(raiz)
 
         return raiz
 
+    #funcao de busca por um valor, retorna o proprio nó
     def busca(self, raiz, valor):
         if raiz is None:
             print("Elemento nao encontrado!")
             return None
 
-        if raiz.chave == valor:
+        if raiz.valor == valor:
             print("Elemento encontrado!")
             return raiz
-        elif valor < raiz.chave:
+        elif valor < raiz.valor:
             return self.busca(raiz.left, valor)
         else:
             return self.busca(raiz.right, valor)
 
-    # def remocao(self, raiz, valor):
-    #     remove = self.busca(raiz, valor)
-    #     if remove is None
-        
-    def delete_node(self, raiz, chave):
- 
-        # Find the node to be deleted and remove it
+    #função de remoção de um nó
+    def remocao(self, raiz, valor):        
         if not raiz:
             return raiz
-        elif chave < raiz.chave:
-            raiz.left = self.delete_node(raiz.left, chave)
-        elif chave > raiz.chave:
-            raiz.right = self.delete_node(raiz.right, chave)
+        elif valor < raiz.valor:
+            raiz.left = self.remocao(raiz.left, valor)
+        elif valor > raiz.valor:
+            raiz.right = self.remocao(raiz.right, valor)
         else:
             if raiz.left is None:
-                temp = raiz.right
+                X = raiz.right
                 raiz = None
-                return temp
+                return X
             elif raiz.right is None:
-                temp = raiz.left
+                X = raiz.left
                 raiz = None
-                return temp
-            temp = self.avl_Minchave(raiz.right)
-            raiz.chave = temp.key
-            raiz.right = self.delete_node(raiz.right, temp.chave)
+                return X
+            X = self.MinimoValorDaArvore(raiz.right)
+            raiz.valor = X.valor
+            raiz.right = self.remocao(raiz.right, X.valor)
         if raiz is None:
             return raiz
  
-        # Update the balance factor of nodes
-        raiz.altura = 1 + max(self.getHeight(raiz.left), self.getHeight(raiz.right))
+        raiz.altura = 1 + max(self.getAltura(raiz.left), self.getAltura(raiz.right))
         fatorBalanceamento = self.fatorBalanceamento(raiz)
  
-        # Balance the tree
+        # Balancear
         if fatorBalanceamento > 1:
             if self.avl_fatorBalanceamento(raiz.left) >= 0:
                 return self.LL(raiz)
             else:
-                # raiz.left = self.RR(raiz.left)
-                # return self.LL(raiz)
                 return self.LR(raiz)
         if fatorBalanceamento < -1:
             if self.fatorBalanceamento(raiz.right) <= 0:
                 return self.RR(raiz)
             else:
-                # raiz.right = self.LL(raiz.right)
-                # return self.RR(raiz)
                 return self.RL(raiz)
         return raiz
 
+    '''funcoes para percorrer a estrutura'''
+    def preOrder(self, raiz):
+        if not raiz:
+            return
+        print("{0} ".format(raiz.valor), end=" ")
+        self.preOrder(raiz.left)
+        self.preOrder(raiz.right)
+    
+    def inOrder(self, raiz):
+        if not raiz:
+            return
+        self.inOrder(raiz.left)
+        print("{0} ".format(raiz.valor), end=" ")
+        self.inOrder(raiz.right)
+
+    def postOrder(self, raiz):
+        if not raiz:
+            return
+        self.postOrder(raiz.left)
+        self.postOrder(raiz.right)
+        print("{0} ".format(raiz.valor), end=" ")
+
+    
